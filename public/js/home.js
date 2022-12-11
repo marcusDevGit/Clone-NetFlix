@@ -6,7 +6,7 @@ fetch(genresListHttp + new URLSearchParams({
   .then(res => res.json())
   .then(data => {
     data.genres.forEach(item => {
-        fetchMovieListByGenres(item.id, item.nome)
+        fetchMovieListByGenres(item.id, item.name)
     });
   })
 
@@ -18,7 +18,7 @@ fetch(genresListHttp + new URLSearchParams({
     }))
     .then(res => res.json())
     .then(data => {
-        makeCategoryElement(`${genres}_movies`, data.results);
+        makeCategoryElement(`${genres}`, data.results);
         
     })
     .catch(err => console.log(err))
@@ -43,5 +43,31 @@ fetch(genresListHttp + new URLSearchParams({
 
         </div>
     `
-    console.log(category)
+    makeCards(category, data)
+  }
+
+  const makeCards = (id,data) => {
+    const movieContainer = document.getElementById(id)
+
+    data.forEach((item, i)=> {
+      if(item.backdrop_path == null) {
+        item.backdrop_path = item.poster_path;
+        if(item.backdrop_path == null) {
+          return
+        }
+      }
+
+      movieContainer.innerHTML += `
+        <div class="movie">
+          <img src="${imgUrl}${item.backdrop_path}" alt="poster">
+          <p class="movie-title">${item.title}</p>
+        </div>
+      `
+
+      if(i == data.length -1) {
+        setTimeout (() => {
+          setupScrool()
+        }, 100)
+      }
+    })
   }
